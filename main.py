@@ -8,8 +8,10 @@ import time
 from scipy.signal import medfilt
 from skimage.restoration import denoise_nl_means, estimate_sigma
 from skimage.metrics import peak_signal_noise_ratio, normalized_root_mse, structural_similarity
-from RED_3D_Osirim_v3.test_fastdvdnet import test_fastdvdnet
-from RED_3D_Osirim_v3.utils import fro, crop_image, fspecial3, blcthre3d, blockproc3, thrextr_3d, ST3Dwt
+from test_fastdvdnet import test_fastdvdnet
+from utils import fro, crop_image, fspecial3, blcthre3d, blockproc3, thrextr_3d, ST3Dwt
+# from RED_3D_Osirim_v3.test_fastdvdnet import test_fastdvdnet
+# from RED_3D_Osirim_v3.utils import fro, crop_image, fspecial3, blcthre3d, blockproc3, thrextr_3d, ST3Dwt
 import argparse
 from bm4d import bm4d
 import os

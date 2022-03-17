@@ -13,13 +13,13 @@ import torch.nn as nn
 import glob
 import scipy.io
 import numpy as np
-# from models import FastDVDnet
-# from fastdvdnet import denoise_seq_fastdvdnet
-# from utils_fastdvdnet import batch_psnr, init_logger_test, \
-#    variable_to_cv2_image, remove_dataparallel_wrapper, open_sequence, close_logger, crop_image
-from RED_3D_Osirim_v3.fastdvdnet import denoise_seq_fastdvdnet
-from RED_3D_Osirim_v3.models import FastDVDnet
-from RED_3D_Osirim_v3.utils_fastdvdnet import remove_dataparallel_wrapper
+from fastdvdnet import denoise_seq_fastdvdnet
+from models import FastDVDnet
+from utils_fastdvdnet import remove_dataparallel_wrapper
+
+# from RED_3D_Osirim_v3.fastdvdnet import denoise_seq_fastdvdnet
+# from RED_3D_Osirim_v3.models import FastDVDnet
+# from RED_3D_Osirim_v3.utils_fastdvdnet import remove_dataparallel_wrapper
 
 NUM_IN_FR_EXT = 5  # temporal size of patch
 MC_ALGO = 'DeepFlow'  # motion estimation algorithm

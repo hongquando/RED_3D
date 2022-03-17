@@ -1,4 +1,3 @@
-
 **High resolution 3D image with Regularization by Denoising (RED 3D)**
 
 * Integration RED 3D with different denoising methods
@@ -12,7 +11,7 @@
 * For Median:
 ```
 python3 main.py \
---image_path ./shepp_logan_256.mat \
+--image_path ./shepp_logan_128.mat \
 --input_path ./input/ \
 --output_path ./output/ \
 --save_output 5 \
@@ -25,11 +24,10 @@ python3 main.py \
 --use_parallel \
 --denoiser median
 ```
-
 * For Non-local means:
 ```
 python3 main.py \
---image_path ./shepp_logan_256.mat \
+--image_path ./shepp_logan_128.mat \
 --input_path ./input/ \
 --output_path ./output/ \
 --save_output 5 \
@@ -46,7 +44,24 @@ python3 main.py \
 * For Wavelet filter:
 ```
 python3 main.py \
---image_path ./shepp_logan_256.mat \
+--image_path ./shepp_logan_128.mat \
+--input_path ./input/ \
+--output_path ./output/ \
+--save_output 5 \
+--crop \
+--psf_sz 9 \
+--gaussian_std 3 \
+--BSNRdb 10 \
+--max_iter 101 \
+--lam 0.02 \
+--use_parallel \
+--denoiser wavelet \
+--sigma 0.1
+```
+* For BM4D:
+```
+python3 main.py \
+--image_path ./shepp_logan_128.mat \
 --input_path ./input/ \
 --output_path ./output/ \
 --save_output 5 \
@@ -63,7 +78,7 @@ python3 main.py \
 * With FastDVDNet
 ```
 python3 main.py \
---image_path ./shepp_logan_256.mat \
+--image_path ./shepp_logan_128.mat \
 --input_path ./input/ \
 --output_path ./output/ \
 --save_output 5 \
@@ -74,7 +89,7 @@ python3 main.py \
 --max_iter 101 \
 --lam 0.02 \
 --use_parallel \
---denoiser fastdvdne \
+--denoiser fastdvdnet \
 --sigma 0.1 \
 --model_file ./net.pth
 ```
