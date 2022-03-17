@@ -14,32 +14,20 @@ import glob
 import scipy.io
 import numpy as np
 from fastdvdnet import denoise_seq_fastdvdnet
-from models import FastDVDnet
-from utils_fastdvdnet import remove_dataparallel_wrapper
-
-# from RED_3D_Osirim_v3.fastdvdnet import denoise_seq_fastdvdnet
-# from RED_3D_Osirim_v3.models import FastDVDnet
-# from RED_3D_Osirim_v3.utils_fastdvdnet import remove_dataparallel_wrapper
 
 NUM_IN_FR_EXT = 5  # temporal size of patch
 MC_ALGO = 'DeepFlow'  # motion estimation algorithm
 
-def test_fastdvdnet(model_temp, x_est, noise_sigma, ):
+def test_fastdvdnet(model_temp, x_est, noise_sigma):
     """Denoises all sequences present in a given folder. Sequences must be stored as numbered
     image sequences. The different sequences must be stored in subfolders under the "test_path" folder.
-
-    Inputs:
-            args (dict) fields:
-                    "model_file": path to model
-                    "test_path": path to sequence to denoise
-                    "suffix": suffix to add to output name
-                    "max_num_fr_per_seq": max number of frames to load per sequence
-                    "noise_sigma": noise level used on test set
-                    "dont_save_results: if True, don't save output images
-                    "no_gpu": if True, run model on CPU
-                    "save_path": where to save outputs as png
-                    "gray": if True, perform denoising of grayscale images instead of RGB
     """
+    # Sets data type according to CPU or GPU modes
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
+
     # Sets the model in evaluation mode (e.g. it removes BN)
     model_temp.eval()
 

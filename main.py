@@ -10,16 +10,23 @@ from skimage.restoration import denoise_nl_means, estimate_sigma
 from skimage.metrics import peak_signal_noise_ratio, normalized_root_mse, structural_similarity
 from test_fastdvdnet import test_fastdvdnet
 from utils import fro, crop_image, fspecial3, blcthre3d, blockproc3, thrextr_3d, ST3Dwt
-# from RED_3D_Osirim_v3.test_fastdvdnet import test_fastdvdnet
-# from RED_3D_Osirim_v3.utils import fro, crop_image, fspecial3, blcthre3d, blockproc3, thrextr_3d, ST3Dwt
+from models import FastDVDnet
+from utils_fastdvdnet import remove_dataparallel_wrapper
 import argparse
 from bm4d import bm4d
 import os
 import logging
 import sys
+import torch
+import torch.nn as nn
 
+## Log file
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
+
+## FastDVDNet
+NUM_IN_FR_EXT = 5  # temporal size of patch
+MC_ALGO = 'DeepFlow'  # motion estimation algorithm
 
 def prepare_data(image_path = './shepp_logan_128.mat', crop = False,
                  psf_sz = 9, gaussian_std = 3,  BSNRdb = 10 , input_path="./input/"):
@@ -155,12 +162,6 @@ def runfp(x, x_est, noise_var, FBC, DTy, FB, blksz, F2B, d ,max_iter = 101, lam 
     psnr_final = 0
     logger.debug('iter\t PSNR \tNRMSE \tSSIM \tTotal_time \tTime_Denoiser \tTime_FFT \tTime_InverseFFT\n')
     if denoiser == "fastdvdnet":
-        # Sets data type according to CPU or GPU modes
-        if torch.cuda.is_available():
-            device = torch.device('cuda')
-        else:
-            device = torch.device('cpu')
-
         # Create models
         # print('Loading models ...')
         model_temp = FastDVDnet(num_input_frames=NUM_IN_FR_EXT)
