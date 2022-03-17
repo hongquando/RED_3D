@@ -1,0 +1,2 @@
+tensorboardX==2.0
+bm4d==4.0.0

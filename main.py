@@ -280,7 +280,7 @@ if __name__ == '__main__':
                         help='param lmax of Wavelet filter')
     argspar = parser.parse_args()
 
-    output_file_handler = logging.FileHandler("./output_BSNR_" + str(argspar.BSNRdb) + "_sigma" + str(argspar.sigma) + ".log")
+    output_file_handler = logging.FileHandler("./output_BSNR_" + str(argspar.BSNRdb) + "_sigma_" + str(argspar.sigma)+ "_"+ argspar.denoiser+".log")
     stdout_handler = logging.StreamHandler(sys.stdout)
 
     logger.addHandler(output_file_handler)
@@ -295,6 +295,6 @@ if __name__ == '__main__':
     im_out, psnr_out = runfp(x, x_est, noise_var, FBC, DTy, FB, blksz, F2B, d,
                              argspar.max_iter, argspar.lam, argspar.sigma, argspar.use_parallel,
                              argspar.input_path, argspar.output_path, argspar.save_output, argspar.model_file,
-                             argspar.lma)
+                             argspar.lmax, argspar.denoiser)
 
     logger.debug("---------------- END FILE ----------------\n")
