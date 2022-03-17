@@ -154,6 +154,27 @@ def runfp(x, x_est, noise_var, FBC, DTy, FB, blksz, F2B, d ,max_iter = 101, lam 
         lam = 1e1 * noise_var
     psnr_final = 0
     logger.debug('iter\t PSNR \tNRMSE \tSSIM \tTotal_time \tTime_Denoiser \tTime_FFT \tTime_InverseFFT\n')
+    if denoiser == "fastdvdnet":
+        # Sets data type according to CPU or GPU modes
+        if torch.cuda.is_available():
+            device = torch.device('cuda')
+        else:
+            device = torch.device('cpu')
+
+        # Create models
+        # print('Loading models ...')
+        model_temp = FastDVDnet(num_input_frames=NUM_IN_FR_EXT)
+
+        # Load saved weights
+        state_temp_dict = torch.load(model_file)
+        if torch.cuda.is_available():
+            device_ids = [0]
+            model_temp = nn.DataParallel(model_temp, device_ids=device_ids).cuda()
+        else:
+            # CPU mode: remove the DataParallel wrapper
+            state_temp_dict = remove_dataparallel_wrapper(state_temp_dict)
+        model_temp.load_state_dict(state_temp_dict)
+
     for i in range(max_iter):
         timeLoop = time.time()
         # Apply the denoiser
@@ -177,7 +198,7 @@ def runfp(x, x_est, noise_var, FBC, DTy, FB, blksz, F2B, d ,max_iter = 101, lam 
             ## FastDVDNet
             x_est_new = [x_est, x_est, x_est]
             x_est_new = np.stack(x_est_new, axis=3).astype(np.float32)
-            f_x_est = test_fastdvdnet(model_file,x_est_new, sigma)
+            f_x_est = test_fastdvdnet(model_temp,x_est_new, sigma)
             f_x_est = f_x_est[:, :, :,0]
         else:
             logger.debug("Please choose one of the 4 denoisers ['median','nlm','wavelet','bm4d','fastdvdnet']")

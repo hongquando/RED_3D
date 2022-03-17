@@ -24,7 +24,7 @@ from utils_fastdvdnet import remove_dataparallel_wrapper
 NUM_IN_FR_EXT = 5  # temporal size of patch
 MC_ALGO = 'DeepFlow'  # motion estimation algorithm
 
-def test_fastdvdnet(model_file, x_est, noise_sigma, ):
+def test_fastdvdnet(model_temp, x_est, noise_sigma, ):
     """Denoises all sequences present in a given folder. Sequences must be stored as numbered
     image sequences. The different sequences must be stored in subfolders under the "test_path" folder.
 
@@ -40,29 +40,6 @@ def test_fastdvdnet(model_file, x_est, noise_sigma, ):
                     "save_path": where to save outputs as png
                     "gray": if True, perform denoising of grayscale images instead of RGB
     """
-    # Start time
-    start_time = time.time()
-
-    # Sets data type according to CPU or GPU modes
-    if torch.cuda.is_available():
-        device = torch.device('cuda')
-    else:
-        device = torch.device('cpu')
-
-    # Create models
-    print('Loading models ...')
-    model_temp = FastDVDnet(num_input_frames=NUM_IN_FR_EXT)
-
-    # Load saved weights
-    state_temp_dict = torch.load(model_file)
-    if torch.cuda.is_available():
-        device_ids = [0]
-        model_temp = nn.DataParallel(model_temp, device_ids=device_ids).cuda()
-    else:
-        # CPU mode: remove the DataParallel wrapper
-        state_temp_dict = remove_dataparallel_wrapper(state_temp_dict)
-    model_temp.load_state_dict(state_temp_dict)
-
     # Sets the model in evaluation mode (e.g. it removes BN)
     model_temp.eval()
 
@@ -71,16 +48,16 @@ def test_fastdvdnet(model_file, x_est, noise_sigma, ):
         if len(seq.shape) == 3:
             seq = np.expand_dims(seq, 1)
         seq = torch.from_numpy(seq).to(device)
+        seqn = seq
+        noisestd = torch.FloatTensor([noise_sigma]).to(device)
 
-    seqn = seq
-    noisestd = torch.FloatTensor([noise_sigma]).to(device)
+        denframes = denoise_seq_fastdvdnet(seq=seqn, \
+                                           noise_std=noisestd, \
+                                           temp_psz=NUM_IN_FR_EXT, \
+                                           model_temporal=model_temp)
 
-    denframes = denoise_seq_fastdvdnet(seq=seqn, \
-                                       noise_std=noisestd, \
-                                       temp_psz=NUM_IN_FR_EXT, \
-                                       model_temporal=model_temp)
+        denframes = denframes.cpu().numpy()
 
-    denframes = denframes.cpu().numpy()
     f_x_est = np.reshape(denframes, (denframes.shape[0], denframes.shape[2], denframes.shape[3], 3))
 
     return f_x_est
