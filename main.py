@@ -199,7 +199,7 @@ def runfp(x, x_est, noise_var, FBC, DTy, FB, blksz, F2B, d ,max_iter = 101, lam 
             ## FastDVDNet
             x_est_new = [x_est, x_est, x_est]
             x_est_new = np.stack(x_est_new, axis=3).astype(np.float32)
-            f_x_est = test_fastdvdnet(model_temp,x_est_new, sigma)
+            f_x_est = test_fastdvdnet(model_temp, x_est_new, sigma)
             f_x_est = f_x_est[:, :, :,0]
         else:
             logger.debug("Please choose one of the 4 denoisers ['median','nlm','wavelet','bm4d','fastdvdnet']")

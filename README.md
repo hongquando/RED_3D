@@ -68,7 +68,7 @@ python3 main.py \
 --max_iter 101 \
 --lam 0.02 \
 --use_parallel \
---denoiser wavelet \
+--denoiser bm4d \
 --sigma 0.1
 ```
 * With FastDVDNet
